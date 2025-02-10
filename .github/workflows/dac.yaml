@@ -92,18 +92,18 @@ jobs:
           enable_cue: true
 
       - name: Install percli
-        uses: perses/github-actions/actions/install_percli@main
+        uses: perses/cli-actions/actions/install_percli@main
         with:
           cli_version: ${{ inputs.cli_version }}
 
       - name: Build the dashboards
-        uses: perses/github-actions/actions/build_dac@main
+        uses: perses/cli-actions/actions/build_dac@main
         with:
           directory: ${{ inputs.directory }}
           file: ${{ inputs.file }}
 
       - name: Login to the API server
-        uses: perses/github-actions/actions/login@main
+        uses: perses/cli-actions/actions/login@main
         with:
           url: ${{ inputs.url }}
           username: ${{ secrets.username }}
@@ -115,14 +115,14 @@ jobs:
           insecure-skip-tls-verify: ${{ inputs.insecure-skip-tls-verify }}
 
       - name: Validate the dashboards
-        uses: perses/github-actions/actions/validate_resources@main
+        uses: perses/cli-actions/actions/validate_resources@main
         with:
           directory: ./built
           online: ${{ inputs.server-validation }}
 
       - name: Preview the dashboards
         if: ${{ github.event_name == 'pull_request' && !inputs.skip-preview }}
-        uses: perses/github-actions/actions/preview_dashboards@main
+        uses: perses/cli-actions/actions/preview_dashboards@main
         with:
           directory: ./built
           project: ${{ inputs.project }}
@@ -131,14 +131,14 @@ jobs:
 
       - name: Generate dashboards diffs
         if: ${{ github.event_name == 'pull_request' && !inputs.skip-diff }}
-        uses: perses/github-actions/actions/diff_dashboards@main
+        uses: perses/cli-actions/actions/diff_dashboards@main
         with:
           directory: ./built
           project: ${{ inputs.project }}
 
       - name: Deploy the dashboards
         if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && !inputs.skip-deploy }}
-        uses: perses/github-actions/actions/apply_resources@main
+        uses: perses/cli-actions/actions/apply_resources@main
         with:
           directory: ./built
           project: ${{ inputs.project }}
