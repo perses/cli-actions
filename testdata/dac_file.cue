@@ -3,7 +3,7 @@ package dac
 kind: "Dashboard"
 metadata: {
     name: "empty_dashboard",
-    project: "perses-github-actions"
+    project: "perses-cli-actions"
 },
 spec: {
     display: name: "Empty Dashboard"

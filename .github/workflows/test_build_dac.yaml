@@ -23,7 +23,7 @@ jobs:
           cli_version: latest
 
       - name: Install cue binary
-        uses: ./actions/setup_environment
+        uses: perses/github-actions/actions/setup_environment@main
         with:
           enable_go: true
           enable_cue: true
