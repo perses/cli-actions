@@ -1,0 +1,10 @@
+name: Perses-CI
+description: An action used by the Perses project to share github actions.
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: 'perses/github-actions'
+        path: '.github/perses-ci'
+        ref: v0.8.0

@@ -1,0 +1,50 @@
+name: Preview dashboards
+description: |
+  Run the `dac preview` command of percli to deploy ephemeral dashboards to the API server
+  **Note:** Login to an API server is required before running this action. You can use the provided `login` action for this purpose.
+inputs:
+  directory:
+    description: Path to the directory containing the resources consumed by the command (mutually exclusive with `file`).
+    required: false
+  file:
+    description: Path to the file that contains the resources consumed by the command (mutually exclusive with `directory`).
+    required: false
+  prefix:
+    description: If provided, it is used to prefix the dashboard preview name.
+    required: false
+  project:
+    description: If present, the project scope for this CLI request.
+    required: false
+  ttl:
+    description: Time To Live of the dashboard preview (default "1d").
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Run the `dac preview` command
+      run: |
+        percli dac preview \
+          $([[ -n "${{ inputs.directory }}" ]] && echo "-d ${{ inputs.directory }}") \
+          $([[ -n "${{ inputs.file }}" ]] && echo "-f ${{ inputs.file }}") \
+          $([[ -n "${{ inputs.prefix }}" ]] && echo "--prefix ${{ inputs.prefix }}") \
+          $([[ -n "${{ inputs.project }}" ]] && echo "--project ${{ inputs.project }}") \
+          $([[ -n "${{ inputs.ttl }}" ]] && echo "--ttl ${{ inputs.ttl }}") \
+          -o json \
+          > preview_output.json
+      shell: bash
+
+    - name: Post preview links to PR
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('preview_output.json', 'utf8'));
+          const previewLinks = data.map(item => `- [${item.project}/${item.dashboard}](${item.preview})`).join('\n');
+          const commentBody = `### Dashboard previews\nThe following ephemeral dashboards have been deployed:\n\n${previewLinks}`;
+          github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: commentBody
+          });

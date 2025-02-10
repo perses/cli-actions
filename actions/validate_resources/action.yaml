@@ -1,0 +1,24 @@
+name: Validate resources
+description: |
+  Run the `lint` command of percli to validate Perses resources
+  **Note:** In online mode, login to an API server is required before running this action. You can use the provided `login` action for this purpose.
+inputs:
+  directory:
+    description: Path to the directory containing the resources consumed by the command (mutually exclusive with `file`).
+    required: false
+  file:
+    description: Path to the file that contains the resources consumed by the command (mutually exclusive with `directory`).
+    required: false
+  online:
+    description: When enabled, it can request the API to make additional validation.
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Run the `lint` command
+      run: |
+        percli lint \
+          $([[ -n "${{ inputs.directory }}" ]] && echo "-d ${{ inputs.directory }}") \
+          $([[ -n "${{ inputs.file }}" ]] && echo "-f ${{ inputs.file }}") \
+          $([[ "${{ inputs.online }}" == "true" ]] && echo "--online")
+      shell: bash

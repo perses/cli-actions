@@ -1,0 +1,41 @@
+name: Login to Perses
+description: Run the `login` command of percli to authenticate to the API server
+inputs:
+  url:
+    description: The URL of the Perses API server.
+    required: true
+  username:
+    description: Username for basic authentication to the API server.
+    required: false
+  password:
+    description: Password for basic authentication to the API server.
+    required: false
+  token:
+    description: Bearer token for authentication to the API server.
+    required: false
+  provider:
+    description: External authentication provider identifier. (slug_id)
+    required: false
+  client-id:
+    description: Client ID used for robotic access when using external authentication provider.
+    required: false
+  client-secret:
+    description: Client Secret used for robotic access when using external authentication provider.
+    required: false
+  insecure-skip-tls-verify:
+    description: If true the server's certificate will not be checked for validity. This will make your HTTPS connections insecure.
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Login to the Perses API
+      run: |
+        percli login ${{ inputs.url }} \
+          $([[ -n "${{ inputs.username }}" ]] && echo "-u ${{ inputs.username }}") \
+          $([[ -n "${{ inputs.password }}" ]] && echo "-p ${{ inputs.password }}") \
+          $([[ -n "${{ inputs.token }}" ]] && echo "--token ${{ inputs.token }}") \
+          $([[ -n "${{ inputs.provider }}" ]] && echo "--provider ${{ inputs.provider }}") \
+          $([[ -n "${{ inputs.client-id }}" ]] && echo "--client-id ${{ inputs.client-id }}") \
+          $([[ -n "${{ inputs.client-secret }}" ]] && echo "--client-secret ${{ inputs.client-secret }}") \
+          $([[ "${{ inputs.insecure-skip-tls-verify }}" == "true" ]] && echo "--insecure-skip-tls-verify")
+      shell: bash

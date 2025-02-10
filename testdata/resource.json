@@ -1,0 +1,20 @@
+{
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "empty_dashboard",
+    "createdAt": "2024-12-04T15:08:03.737189012Z",
+    "updatedAt": "2024-12-04T15:08:03.737189012Z",
+    "version": 0,
+    "project": "perses-github-actions"
+  },
+  "spec": {
+    "display": {
+      "name": "Empty Dashboard"
+    },
+    "panels": {},
+    "layouts": [],
+    "variables": [],
+    "duration": "1h",
+    "refreshInterval": "0s"
+  }
+}

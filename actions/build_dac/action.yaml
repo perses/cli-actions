@@ -1,0 +1,26 @@
+name: Build the dashboards as code
+description: Run the `dac build` command of percli to build the dashboards as code
+inputs:
+  directory:
+    description: Path to the directory containing the resources consumed by the command  (mutually exclusive with `file`).
+    required: false
+  file:
+    description: Path to the file that contains the resources consumed by the command (mutually exclusive with `directory`).
+    required: false
+  mode:
+    description: Mode for the output. Must be either file to automatically save the content to file(s), or `stdout` to print on the standard output. (default "file")
+    required: false
+  output:
+    description: "Format of the output: json or yaml (default is yaml)."
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Run the `dac build` command
+      run: |
+        percli dac build \
+          $([[ -n "${{ inputs.directory }}" ]] && echo "-d ${{ inputs.directory }}") \
+          $([[ -n "${{ inputs.file }}" ]] && echo "-f ${{ inputs.file }}") \
+          $([[ -n "${{ inputs.mode }}" ]] && echo "-m ${{ inputs.mode }}") \
+          $([[ -n "${{ inputs.output }}" ]] && echo "-o ${{ inputs.output }}")
+      shell: bash

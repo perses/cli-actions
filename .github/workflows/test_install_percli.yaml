@@ -1,0 +1,23 @@
+name: Test Install percli
+on:
+  workflow_dispatch:  # Allow manual triggering
+  push:
+    branches:
+      - main
+      - release/*
+      - snapshot/*
+    tags:
+      - v*
+  pull_request:
+  merge_group:
+jobs:
+  test-install-percli:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install percli
+        uses: ./actions/install_percli
+        with:
+          cli_version: "latest"

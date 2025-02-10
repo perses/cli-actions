@@ -1,0 +1,145 @@
+name: Reusable Workflow for Dashboard-as-Code CI/CD
+on:
+  workflow_call:
+    inputs:
+      # general:
+      url:
+        description: The URL of the Perses API server where to deploy the dashboard preview.
+        type: string
+        required: true
+      directory:
+        description: Path to the directory containing the dashboards as code (mutually exclusive with `file`).
+        type: string
+        required: false
+      file:
+        description: Path to the file that contains the dashboards as code (mutually exclusive with `directory`).
+        type: string
+        required: false
+      project:
+        description: If present, the project scope for this CLI request.
+        type: string
+        required: false
+      cli_version:
+        description: Version of percli to install
+        type: string
+        default: latest
+        required: false
+      # skip:
+      skip-preview:
+        description: Skip the dashboard preview stage if provided.
+        type: boolean
+        required: false
+      skip-diff:
+        description: Skip the dashboard diff generation stage if provided.
+        type: boolean
+        required: false
+      skip-deploy:
+        description: Skip the dashboard deployment stage if provided.
+        type: boolean
+        required: false
+      # auth:
+      provider:
+        description: External authentication provider identifier. (slug_id)
+        type: string
+        required: false
+      insecure-skip-tls-verify:
+        description: If true the server's certificate will not be checked for validity. This will make your HTTPS connections insecure.
+        type: string
+        required: false
+      # validate-specific:
+      server-validation:
+        description: When enabled, requests the API to make additional validation.
+        type: boolean
+        required: false
+      # preview-specific:
+      ttl:
+        description: Time To Live of the dashboard preview (default "1d").
+        type: string
+        required: false
+      # deploy-specific:
+      force:
+        description: If present, dashboards will be deployed even if the projects are not consistent between the --project flag and the dashboards metadata (the latter has priority).
+        type: boolean
+        required: false
+    secrets:
+      username:
+        description: Username for basic authentication to the API server.
+        required: false
+      password:
+        description: Password for basic authentication to the API server.
+        required: false
+      token:
+        description: Bearer token for authentication to the API server.
+        required: false
+      client-id:
+        description: Client ID used for robotic access when using external authentication provider.
+        required: false
+      client-secret:
+        description: Client Secret used for robotic access when using external authentication provider.
+        required: false
+
+jobs:
+  dac:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install necessary tools
+        uses: perses/github-actions/actions/setup_environment@main
+        with:
+          enable_go: true
+          enable_cue: true
+
+      - name: Install percli
+        uses: perses/github-actions/actions/install_percli@main
+        with:
+          cli_version: ${{ inputs.cli_version }}
+
+      - name: Build the dashboards
+        uses: perses/github-actions/actions/build_dac@main
+        with:
+          directory: ${{ inputs.directory }}
+          file: ${{ inputs.file }}
+
+      - name: Login to the API server
+        uses: perses/github-actions/actions/login@main
+        with:
+          url: ${{ inputs.url }}
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
+          token: ${{ secrets.token }}
+          provider: ${{ inputs.provider }}
+          client-id: ${{ secrets.client-id }}
+          client-secret: ${{ secrets.client-secret }}
+          insecure-skip-tls-verify: ${{ inputs.insecure-skip-tls-verify }}
+
+      - name: Validate the dashboards
+        uses: perses/github-actions/actions/validate_resources@main
+        with:
+          directory: ./built
+          online: ${{ inputs.server-validation }}
+
+      - name: Preview the dashboards
+        if: ${{ github.event_name == 'pull_request' && !inputs.skip-preview }}
+        uses: perses/github-actions/actions/preview_dashboards@main
+        with:
+          directory: ./built
+          project: ${{ inputs.project }}
+          prefix: PR${{ github.event.pull_request.number }}
+          ttl: ${{ inputs.ttl }}
+
+      - name: Generate dashboards diffs
+        if: ${{ github.event_name == 'pull_request' && !inputs.skip-diff }}
+        uses: perses/github-actions/actions/diff_dashboards@main
+        with:
+          directory: ./built
+          project: ${{ inputs.project }}
+
+      - name: Deploy the dashboards
+        if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && !inputs.skip-deploy }}
+        uses: perses/github-actions/actions/apply_resources@main
+        with:
+          directory: ./built
+          project: ${{ inputs.project }}
+          force: ${{ inputs.force }}

@@ -1,0 +1,28 @@
+name: Apply the resources
+description: |
+  Run the `apply` command of percli to deploy Perses resources to the API server
+  **Note:** Login to an API server is required before running this action. You can use the provided `login` action for this purpose.
+inputs:
+  directory:
+    description: Path to the directory containing the resources consumed by the command (mutually exclusive with `file`).
+    required: false
+  file:
+    description: Path to the file that contains the resources consumed by the command (mutually exclusive with `directory`).
+    required: false
+  project:
+    description: If present, the project scope for this CLI request.
+    required: false
+  force:
+    description: If present, the command will create the resource even if the projects are not consistent between the --project flag and the dashboard metadata (the latter has priority).
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Run the `apply` command
+      run: |
+        percli apply \
+          $([[ -n "${{ inputs.directory }}" ]] && echo "-d ${{ inputs.directory }}") \
+          $([[ -n "${{ inputs.file }}" ]] && echo "-f ${{ inputs.file }}") \
+          $([[ -n "${{ inputs.project }}" ]] && echo "--project ${{ inputs.project }}") \
+          $([[ "${{ inputs.force }}" == "true" ]] && echo "--force")
+      shell: bash

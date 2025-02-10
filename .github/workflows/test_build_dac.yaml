@@ -1,0 +1,56 @@
+name: Test Build Dashboards-as-Code
+on:
+  workflow_dispatch:  # Allow manual triggering
+  push:
+    branches:
+      - main
+      - release/*
+      - snapshot/*
+    tags:
+      - v*
+  pull_request:
+  merge_group:
+jobs:
+  test-build-dac:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install percli
+        uses: ./actions/install_percli
+        with:
+          cli_version: latest
+
+      - name: Install cue binary
+        uses: ./actions/setup_environment
+        with:
+          enable_go: true
+          enable_cue: true
+
+      - name: Test build DaC with directory
+        uses: ./actions/build_dac
+        with:
+          directory: ./testdata/dac_folder
+
+      - name: Test build DaC with file
+        uses: ./actions/build_dac
+        with:
+          file: ./testdata/dac_file.cue
+
+      - name: Test build DaC with both inputs (should fail)
+        id: test_fail
+        uses: ./actions/build_dac
+        with:
+          directory: ./testdata/dac_folder
+          file: ./testdata/dac_file.cue
+        continue-on-error: true
+      
+      - name: Validate failure for both inputs
+        run: |
+          if [ "${{ steps.test_fail.outcome }}" != "failure" ]; then
+            echo "Error: Action did not fail as expected when both inputs were provided."
+            exit 1
+          else
+            echo "Success: Action failed as expected."
+          fi

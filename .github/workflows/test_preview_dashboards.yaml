@@ -1,0 +1,36 @@
+name: Test Preview Dashboards
+on:
+  workflow_dispatch:  # Allow manual triggering
+  push:
+    branches:
+      - main
+      - release/*
+      - snapshot/*
+    tags:
+      - v*
+  pull_request:
+  merge_group:
+jobs:
+  test-preview-dashboards:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install percli
+        uses: ./actions/install_percli
+        with:
+          cli_version: "latest"
+
+      - name: Login to the API server
+        uses: ./actions/login
+        with:
+          url: https://demo.perses.dev
+          username: ${{ secrets.TEST_USERNAME }}
+          password: ${{ secrets.TEST_PASSWORD }}
+
+      - name: Test dashboard preview
+        uses: ./actions/preview_dashboards
+        with:
+          file: ./testdata/resources_folder/dashboard.json
+          prefix: test-preview
