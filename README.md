@@ -8,8 +8,8 @@ For each utility provided, check the source file to see the list of parameters a
 
 ### [`dac`](.github/workflows/dac.yaml)
 
-A standard workflow that should suit in most cases: The default behavior for it is:
-- for a PR: build + validate + preview + diff
+A standard workflow for Dashboard-as-Code that should suit in most cases. The default behavior for it is:
+- on a PR: build + validate + preview + diff
 - on default branch: build + validate + deploy
 
 Example of usage:
