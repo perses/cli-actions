@@ -1,7 +1,7 @@
 name: Install percli
 description: Install the Perses CLI
 inputs:
-  cli_version:
+  cli-version:
     description: Version of percli to install
     default: latest
 runs:
@@ -9,8 +9,8 @@ runs:
   steps:
     - name: Install percli from docker image
       run: |
-        docker pull persesdev/perses:${{ inputs.cli_version }}
-        docker create --name tempcontainer persesdev/perses:${{ inputs.cli_version }}
+        docker pull persesdev/perses:${{ inputs.cli-version }}
+        docker create --name tempcontainer persesdev/perses:${{ inputs.cli-version }}
         docker cp tempcontainer:/bin/percli /usr/local/bin/percli
         docker rm tempcontainer
       shell: bash

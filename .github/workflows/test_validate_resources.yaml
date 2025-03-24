@@ -20,7 +20,7 @@ jobs:
       - name: Install percli
         uses: ./actions/install_percli
         with:
-          cli_version: latest
+          cli-version: latest
 
       - name: Install cue binary
         uses: perses/github-actions/actions/setup_environment@main

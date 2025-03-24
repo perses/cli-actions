@@ -19,7 +19,7 @@ on:
         description: If present, the project scope for this CLI request.
         type: string
         required: false
-      cli_version:
+      cli-version:
         description: Version of percli to install
         type: string
         default: latest
@@ -102,7 +102,7 @@ jobs:
       - name: Install percli
         uses: perses/cli-actions/actions/install_percli@main
         with:
-          cli_version: ${{ inputs.cli_version }}
+          cli-version: ${{ inputs.cli-version }}
   
       - name: Login to CUE's Central Registry to allow retrieving deps
         if: ${{ !inputs.skip-cue-login }}
