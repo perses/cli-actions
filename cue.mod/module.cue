@@ -4,6 +4,6 @@ language: {
 }
 deps: {
 	"github.com/perses/perses/cue@v0": {
-		v: "v0.0.2-test"
+		v: "v0.51.0-preview"
 	}
 }
