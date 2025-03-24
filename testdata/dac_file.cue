@@ -1,12 +1,5 @@
 package dac
 
-kind: "Dashboard"
-metadata: {
-    name: "empty_dashboard",
-    project: "perses-cli-actions"
-},
-spec: {
-    display: name: "Empty Dashboard"
-    duration: "1h",
-    refreshInterval: "0s"
-}
+import "github.com/perses/perses/cue/dac-utils/dashboard@v0"
+
+dashboard & { #name: "empty_dashboard", #project: "perses-cli-actions" }

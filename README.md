@@ -21,6 +21,7 @@ jobs:
       url: https://demo.perses.dev
       directory: ./dac
       server-validation: true
+      skip-cue-login: true # when working with Go SDK only
     secrets:
       username: ${{ secrets.USR }}
       password: ${{ secrets.PWD }}
