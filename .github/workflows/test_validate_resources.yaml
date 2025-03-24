@@ -27,6 +27,7 @@ jobs:
         with:
           enable_go: true
           enable_cue: true
+          cue_version: "v0.12.0"
 
       - name: Test resources validation
         uses: ./actions/validate_resources
