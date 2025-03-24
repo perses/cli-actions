@@ -79,7 +79,7 @@ steps:
   - name: Install percli
     uses: perses/cli-actions/actions/install_percli@v0.1.0
     with:
-      cli_version: "latest"
+      cli-version: "latest"
 ```
 
 ### [`login`](./actions/login/action.yaml)

@@ -20,4 +20,4 @@ jobs:
       - name: Install percli
         uses: ./actions/install_percli
         with:
-          cli_version: "latest"
+          cli-version: "latest"
