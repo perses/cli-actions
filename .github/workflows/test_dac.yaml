@@ -22,3 +22,4 @@ jobs:
     secrets:
       username: ${{ secrets.TEST_USERNAME }}
       password: ${{ secrets.TEST_PASSWORD }}
+      cue-token: ${{ secrets.CUE_REG_TOKEN }}

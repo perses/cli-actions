@@ -81,6 +81,9 @@ on:
       client-secret:
         description: Client Secret used for robotic access when using external authentication provider.
         required: false
+      cue-token:
+        description: Token for CUE's Central Registry.
+        required: false
 
 jobs:
   dac:
@@ -103,7 +106,7 @@ jobs:
   
       - name: Login to CUE's Central Registry to allow retrieving deps
         if: ${{ !inputs.skip-cue-login }}
-        run: cue login --token=${{ secrets.CUE_REG_TOKEN }}
+        run: cue login --token=${{ secrets.cue-token }}
 
       - name: Build the dashboards
         uses: perses/cli-actions/actions/build_dac@main
