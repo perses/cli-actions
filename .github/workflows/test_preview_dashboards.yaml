@@ -20,7 +20,7 @@ jobs:
       - name: Install percli
         uses: ./actions/install_percli
         with:
-          cli-version: "latest"
+          cli-version: v0.51.0-beta.1 # TODO change to stable release when possible
 
       - name: Login to the API server
         uses: ./actions/login

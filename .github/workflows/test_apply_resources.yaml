@@ -20,7 +20,7 @@ jobs:
       - name: Install percli
         uses: ./actions/install_percli
         with:
-          cli-version: "latest"
+          cli-version: latest
 
       - name: Login to the API server
         uses: ./actions/login
