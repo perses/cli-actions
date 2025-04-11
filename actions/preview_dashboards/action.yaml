@@ -40,8 +40,20 @@ runs:
         script: |
           const fs = require('fs');
           const data = JSON.parse(fs.readFileSync('preview_output.json', 'utf8'));
-          const previewLinks = data.map(item => `- [${item.project}/${item.dashboard}](${item.preview})`).join('\n');
-          const commentBody = `### Dashboard previews\nThe following ephemeral dashboards have been deployed:\n\n${previewLinks}`;
+
+          // Build table header
+          let table = `| Project | Dashboard | Status | Preview | Current |\n`;
+          table +=    `|---------|-----------|--------|---------|---------|\n`;
+
+          // Build table rows
+          for (const item of data) {
+            const status = item.current == '' ? 'NEW' : 'UPDATED';
+            const currentLink = item.current == '' ? 'N/A' : `[Current](${item.current})` ;
+            table += `| ${item.project} | ${item.dashboard} | ${status} | [Preview](${item.preview}) | ${currentLink} |\n`;
+          }
+
+          const commentBody = `### Dashboard previews\n\n${table}`;
+
           github.rest.issues.createComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
