@@ -99,8 +99,15 @@ jobs:
           enable_cue: true
           cue_version: "v0.12.0"
 
+      - name: Retrieve workflow version
+        id: workflow-version
+        uses: canonical/get-workflow-version-action@v1
+        with:
+          repository-name: perses/cli-actions
+          file-name: dac.yaml
+
       - name: Install percli
-        uses: ./actions/install_percli
+        uses: perses/cli-actions/actions/install_percli@'${{ steps.workflow-version.outputs.sha }}'
         with:
           cli-version: ${{ inputs.cli-version }}
   
@@ -109,13 +116,13 @@ jobs:
         run: cue login --token=${{ secrets.cue-token }}
 
       - name: Build the dashboards
-        uses: ./actions/build_dac
+        uses: perses/cli-actions/actions/build_dac@'${{ steps.workflow-version.outputs.sha }}'
         with:
           directory: ${{ inputs.directory }}
           file: ${{ inputs.file }}
 
       - name: Login to the API server
-        uses: ./actions/login
+        uses: perses/cli-actions/actions/login@'${{ steps.workflow-version.outputs.sha }}'
         with:
           url: ${{ inputs.url }}
           username: ${{ secrets.username }}
@@ -127,14 +134,14 @@ jobs:
           insecure-skip-tls-verify: ${{ inputs.insecure-skip-tls-verify }}
 
       - name: Validate the dashboards
-        uses: ./actions/validate_resources
+        uses: perses/cli-actions/actions/validate_resources@'${{ steps.workflow-version.outputs.sha }}'
         with:
           directory: ./built
           online: ${{ inputs.server-validation }}
 
       - name: Preview the dashboards
         if: ${{ github.event_name == 'pull_request' && !inputs.skip-preview }}
-        uses: ./actions/preview_dashboards
+        uses: perses/cli-actions/actions/preview_dashboards@'${{ steps.workflow-version.outputs.sha }}'
         with:
           directory: ./built
           project: ${{ inputs.project }}
@@ -143,14 +150,14 @@ jobs:
 
       - name: Generate dashboards diffs
         if: ${{ github.event_name == 'pull_request' && !inputs.skip-diff }}
-        uses: ./actions/diff_dashboards
+        uses: perses/cli-actions/actions/diff_dashboards@'${{ steps.workflow-version.outputs.sha }}'
         with:
           directory: ./built
           project: ${{ inputs.project }}
 
       - name: Deploy the dashboards
         if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && !inputs.skip-deploy }}
-        uses: ./actions/apply_resources
+        uses: perses/cli-actions/actions/apply_resources@'${{ steps.workflow-version.outputs.sha }}'
         with:
           directory: ./built
           project: ${{ inputs.project }}
