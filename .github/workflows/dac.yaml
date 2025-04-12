@@ -37,10 +37,6 @@ on:
         description: Skip the dashboard deployment stage if provided.
         type: boolean
         required: false
-      skip-cue-login:
-        description: Skip the `cue login` stage. Useful if you e.g you are only using Go to code dashboards.
-        type: boolean
-        required: false
       # auth:
       provider:
         description: External authentication provider identifier. (slug_id)
@@ -117,10 +113,6 @@ jobs:
         uses: ./perses-cli-actions/actions/install_percli
         with:
           cli-version: ${{ inputs.cli-version }}
-  
-      - name: Login to CUE's Central Registry to allow retrieving deps
-        if: ${{ !inputs.skip-cue-login }}
-        run: cue login --token=${{ secrets.cue-token }}
 
       - name: Build the dashboards
         uses: ./perses-cli-actions/actions/build_dac
