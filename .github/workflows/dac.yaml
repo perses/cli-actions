@@ -20,7 +20,7 @@ on:
         type: string
         required: false
       cli-version:
-        description: Version of percli to install. /!\ For this version of the workflow, the percli version should be at least v0.51.0-beta.1 or higher
+        description: Version of percli to install. /!\ For this version of the workflow, the percli version should be at least v0.53.1 or higher
         type: string
         default: latest
         required: false
