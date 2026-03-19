@@ -20,14 +20,14 @@ jobs:
       - name: Install percli
         uses: ./actions/install_percli
         with:
-          cli-version: v0.51.0-beta.1 # TODO change to stable release when possible
+          cli-version: v0.53.1
 
       - name: Install cue binary
         uses: perses/github-actions/actions/setup_environment@main
         with:
           enable_go: true
           enable_cue: true
-          cue_version: "v0.12.0"
+          cue_version: "v0.15.4"
 
       - name: Test build DaC with directory
         uses: ./actions/build_dac
@@ -46,7 +46,7 @@ jobs:
           directory: ./testdata/dac_folder
           file: ./testdata/dac_file.cue
         continue-on-error: true
-      
+
       - name: Validate failure for both inputs
         run: |
           if [ "${{ steps.test_fail.outcome }}" != "failure" ]; then
