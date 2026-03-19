@@ -1,6 +1,6 @@
 module: "github.com/perses/cli-actions"
 language: {
-	version: "v0.12.0"
+	version: "v0.15.4"
 }
 deps: {
 	"github.com/perses/perses/cue@v0": {
