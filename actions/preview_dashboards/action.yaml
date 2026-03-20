@@ -47,8 +47,9 @@ runs:
 
           // Build table rows
           for (const item of data) {
-            const status = item.current == '' ? 'NEW' : 'UPDATED';
-            const currentLink = item.current == '' ? 'N/A' : `[Current](${item.current})` ;
+            const hasCurrent = typeof item.current === 'string' && item.current.trim() !== '';
+            const status = hasCurrent ? 'UPDATED' : 'NEW';
+            const currentLink = hasCurrent ? `[Current](${item.current})` : 'N/A';
             table += `| ${item.project} | ${item.dashboard} | ${status} | [Preview](${item.preview}) | ${currentLink} |\n`;
           }
 
