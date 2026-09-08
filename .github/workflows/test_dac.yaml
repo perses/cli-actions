@@ -18,7 +18,7 @@ jobs:
       url: https://demo.perses.dev
       directory: ./testdata/dac_folder
       server-validation: true
-      cli-version: v0.53.1
+      cli-version: v0.55.0
     secrets:
       username: ${{ secrets.TEST_USERNAME }}
       password: ${{ secrets.TEST_PASSWORD }}
