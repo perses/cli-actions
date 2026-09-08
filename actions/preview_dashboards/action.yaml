@@ -12,6 +12,10 @@ inputs:
   prefix:
     description: If provided, it is used to prefix the dashboard preview name.
     required: false
+  create-project:
+    description: If true, the projects encountered in resource definitions will be created if they do not already exist. /!\ It does not make sense to use this flag if the `project` input is provided.
+    required: false
+    default: true
   project:
     description: If present, the project scope for this CLI request.
     required: false
@@ -28,6 +32,7 @@ runs:
           $([[ -n "${{ inputs.file }}" ]] && echo "-f ${{ inputs.file }}") \
           $([[ -n "${{ inputs.prefix }}" ]] && echo "--prefix ${{ inputs.prefix }}") \
           $([[ -n "${{ inputs.project }}" ]] && echo "--project ${{ inputs.project }}") \
+          $([[ "${{ inputs.create-project }}" == "true" ]] && echo "--create-project") \
           $([[ -n "${{ inputs.ttl }}" ]] && echo "--ttl ${{ inputs.ttl }}") \
           -o json \
           > preview_output.json

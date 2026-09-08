@@ -19,6 +19,11 @@ on:
         description: If present, the project scope for this CLI request.
         type: string
         required: false
+      create-project:
+        description: If true, the projects encountered in resource definitions will be created if they do not already exist. /!\ It does not make sense to use this flag if the `project` input is provided.
+        type: boolean
+        default: true
+        required: false
       cli-version:
         description: Version of percli to install. /!\ For this version of the workflow, the percli version should be at least v0.53.1 or higher
         type: string
@@ -144,6 +149,7 @@ jobs:
         with:
           directory: ./built
           project: ${{ inputs.project }}
+          create-project: ${{ inputs.create-project }}
           prefix: PR${{ github.event.pull_request.number }}
           ttl: ${{ inputs.ttl }}
 
@@ -160,4 +166,5 @@ jobs:
         with:
           directory: ./built
           project: ${{ inputs.project }}
+          create-project: ${{ inputs.create-project }}
           force: ${{ inputs.force }}
