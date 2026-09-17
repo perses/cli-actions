@@ -24,6 +24,16 @@ on:
         type: string
         default: latest
         required: false
+      runs-on:
+        description: Label of the runner to execute the job on.
+        type: string
+        default: ubuntu-latest
+        required: false
+      go-version:
+        description: Go version to install, e.g. "1.26.x".
+        type: string
+        default: 1.27.x
+        required: false
       # skip:
       skip-preview:
         description: Skip the dashboard preview stage if provided.
@@ -83,17 +93,18 @@ on:
 
 jobs:
   dac:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install necessary tools
-        uses: perses/github-actions/actions/setup_environment@v0.9.0
+        uses: perses/github-actions/actions/setup_environment@v0.13.0
         with:
           enable_go: true
+          go_version: ${{ inputs.go-version }}
           enable_cue: true
-          cue_version: "v0.15.4"
+          cue_version: "v0.16.1"
 
       - name: Retrieve workflow version
         id: workflow-version
