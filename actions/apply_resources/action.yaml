@@ -12,6 +12,10 @@ inputs:
   project:
     description: If present, the project scope for this CLI request.
     required: false
+  create-project:
+    description: If true, the projects encountered in resource definitions will be created if they do not already exist. /!\ It does not make sense to use this flag if the `project` input is provided.
+    required: false
+    default: true
   force:
     description: If present, the command will create the resource even if the projects are not consistent between the --project flag and the dashboard metadata (the latter has priority).
     required: false
@@ -24,5 +28,6 @@ runs:
           $([[ -n "${{ inputs.directory }}" ]] && echo "-d ${{ inputs.directory }}") \
           $([[ -n "${{ inputs.file }}" ]] && echo "-f ${{ inputs.file }}") \
           $([[ -n "${{ inputs.project }}" ]] && echo "--project ${{ inputs.project }}") \
+          $([[ "${{ inputs.create-project }}" == "true" ]] && echo "--create-project") \
           $([[ "${{ inputs.force }}" == "true" ]] && echo "--force")
       shell: bash
