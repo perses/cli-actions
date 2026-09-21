@@ -12,6 +12,10 @@ inputs:
   project:
     description: If present, the project scope for this CLI request.
     required: false
+  comment:
+    description: If true, the generated diffs are posted as a comment in the pull-request.
+    required: false
+    default: true
 runs:
   using: composite
   steps:
@@ -24,7 +28,7 @@ runs:
       shell: bash
 
     - name: Post diffs as PR comments
-      if: ${{ github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' && inputs.comment == 'true' }}
       uses: actions/github-script@v7
       with:
         script: |

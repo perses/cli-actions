@@ -22,6 +22,10 @@ inputs:
   ttl:
     description: Time To Live of the dashboard preview (default "1d").
     required: false
+  comment:
+    description: If true, the preview links are posted as a comment in the pull-request.
+    required: false
+    default: true
 runs:
   using: composite
   steps:
@@ -39,7 +43,7 @@ runs:
       shell: bash
 
     - name: Post preview links to PR
-      if: ${{ github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' && inputs.comment == 'true' }}
       uses: actions/github-script@v7
       with:
         script: |

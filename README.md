@@ -12,6 +12,8 @@ A standard workflow for Dashboard-as-Code that should suit in most cases. The de
 - on a PR: build + validate + preview + diff
 - on default branch: build + validate + deploy
 
+On a PR, it posts a single consolidated comment listing for each dashboard: its status, a link to the preview, a link to the current version and a link to the diff (published in the workflow run summary).
+
 Example of usage:
 ```yaml
 jobs:
@@ -56,7 +58,7 @@ steps:
 
 ### [`diff_dashboards`](./actions/diff_dashboards/action.yaml)
 
-Wrapper around the `percli dac diff` command. It appends the generated diffs as a comment in the pull-request.
+Wrapper around the `percli dac diff` command. It appends the generated diffs as a comment in the pull-request (can be disabled with the `comment` input).
 
 Example of usage:
 ```yaml
@@ -98,7 +100,7 @@ steps:
 
 ### [`preview_dashboards`](./actions/preview_dashboards/action.yaml)
 
-Wrapper around the `percli dac preview` command. It appends the links to the generated preview dashboards as a comment in the pull-request.
+Wrapper around the `percli dac preview` command. It appends the links to the generated preview dashboards as a comment in the pull-request (can be disabled with the `comment` input).
 
 Example of usage:
 ```yaml
