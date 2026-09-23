@@ -56,20 +56,6 @@ steps:
       directory: ./testdata/dac_folder
 ```
 
-### [`diff_dashboards`](./actions/diff_dashboards/action.yaml)
-
-Wrapper around the `percli dac diff` command. It appends the generated diffs as a comment in the pull-request (can be disabled with the `comment` input).
-
-Example of usage:
-```yaml
-steps:
-  - name: Generate dashboard diffs
-    uses: perses/cli-actions/actions/diff_dashboards@v0.1.0
-    with:
-      directory: ./testdata/resources_folder
-      project: previews
-```
-
 ### [`install_percli`](./actions/install_percli/action.yaml)
 
 Install percli. Prerequisite to run the other actions.
@@ -98,15 +84,15 @@ steps:
       password: ${{ secrets.TEST_PASSWORD }}
 ```
 
-### [`preview_dashboards`](./actions/preview_dashboards/action.yaml)
+### [`preview_and_diff_dashboards`](./actions/preview_and_diff_dashboards/action.yaml)
 
-Wrapper around the `percli dac preview` command. It appends the links to the generated preview dashboards as a comment in the pull-request (can be disabled with the `comment` input).
+Wrapper around the `percli dac preview` and `percli dac diff` commands. It posts a consolidated report of the dashboard changes as a comment in the pull-request (can be disabled with the `comment` input), with the diffs published to the workflow run summary. The preview and diff stages can be individually skipped with the `skip-preview` and `skip-diff` inputs.
 
 Example of usage:
 ```yaml
 steps:
-  - name: Generate dashboard previews
-    uses: perses/cli-actions/actions/preview_dashboards@v0.1.0
+  - name: Preview & diff the dashboards
+    uses: perses/cli-actions/actions/preview_and_diff_dashboards@v0.1.0
     with:
       directory: ./testdata/dashboards_folder
       prefix: test-preview
