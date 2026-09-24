@@ -1,4 +1,4 @@
-name: Test Diff Dashboards
+name: Test Preview & Diff Dashboards
 on:
   workflow_dispatch:  # Allow manual triggering
   push:
@@ -10,8 +10,11 @@ on:
       - v*
   pull_request:
   merge_group:
+permissions:
+  contents: read
+  pull-requests: write  # Required to post the dashboard changes comment on PRs
 jobs:
-  test-diff-dashboards:
+  test-preview-and-diff-dashboards:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,7 +32,8 @@ jobs:
           username: ${{ secrets.TEST_USERNAME }}
           password: ${{ secrets.TEST_PASSWORD }}
 
-      - name: Test dashboard diff
-        uses: ./actions/diff_dashboards
+      - name: Test dashboard preview & diff
+        uses: ./actions/preview_and_diff_dashboards
         with:
           directory: ./testdata/resources_folder
+          prefix: test-preview
